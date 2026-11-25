@@ -1,0 +1,7 @@
+# M1 EXPLORER — Motion integration V1.0 (laboratory prototype)
+
+Requires the already tested `/home/pi/share/motion_safety_supervisor.py`, the original Yahboom startup script and the existing ROS 2 Humble image. The battery service is not modified. The installer changes only the entrypoint path in the host startup script, preserves a backup, and does not change the running container. No motion commands are sent by the installer.
+
+After a normal boot, the mux starts with NONE and the supervisor DISARMED. The joystick's Twist output is remapped; its other actuator topics are not intercepted. Only a selected source may forward live inputs, and no artificial keepalive is emitted. The source selector is not an access-control mechanism: direct publishers can bypass it. Selection requires a recent DISARMED status; switch operations must be serialized by the operator (not a transactional interlock). The supervisor and mux respawn if they exit, but this does not guarantee a stop or protect against host/DDS/driver/STM32 failure. Do not use on the ground until the physical safety strategy is validated. Joystick dead-man and actual hardware-disconnect behavior are not yet validated.
+
+Install: `sudo bash install_m1_motion.sh` from the extracted folder. Restore: `sudo bash install_m1_motion.sh --rollback` (takes effect next normal boot). Keep wheels raised and power switch accessible during boot and all tests. Syntax checked only; ROS integration requires bench validation.
